@@ -14,12 +14,34 @@ fn main() {
     }
 
     fn convert_string(string: &str) {
-        let mut string_to_chars = string.chars();
-        let first_char = string_to_chars.next().unwrap();
+        let text: String = String::from(string);
+        let mut complete_string = String::new();
 
-        let first_letter_vowel = is_vowel(first_char);
-        println!("first letter of {string} is a vowel: {first_letter_vowel}");
+        for word in text.split_whitespace() {
+            let mut string_to_chars = word.chars();
+            let first_char = string_to_chars.next().unwrap();
+
+            let first_letter_vowel = is_vowel(first_char);
+
+            if first_letter_vowel {
+                let result = format!("{word}-hay");
+
+                if !complete_string.is_empty() {
+                    complete_string.push(' ');
+                }
+                complete_string.push_str(&result);
+            } else {
+                let rest_of_word = string_to_chars.collect::<String>();
+                let result = format!("{rest_of_word}-{first_char}ay");
+
+                if !complete_string.is_empty() {
+                    complete_string.push(' ');
+                }
+                complete_string.push_str(&result);
+            }
+        }
+        println!("{complete_string}");
     }
 
-    convert_string("OONGABOONGA");
+    convert_string("BING BING BONG");
 }
