@@ -37,7 +37,29 @@ fn main() -> io::Result<()> {
 
             if words.len() == 2 {
                 if words[1] == "all" {
-                    println!("All staff: \n {:?}", staff);
+                    // let mut sorted_deps = Vec::new();
+                    // for key in staff.keys() {
+                    //     sorted_deps.push(key);
+                    // }
+                    // below line is the above 4 but briefer
+                    let mut sorted_deps: Vec<&String> = staff.keys().collect();
+                    sorted_deps.sort();
+
+                    let mut all_names: Vec<String> = Vec::new();
+
+                    for dept in sorted_deps {
+                        if let Some(department_staff) = staff.get(dept) {
+                            let mut sorted_names = department_staff.clone();
+                            sorted_names.sort();
+
+                            // for name in sorted_names {
+                            //     all_names.push(name);
+                            // }
+                            all_names.extend(sorted_names);
+                        }
+                    }
+
+                    println!("All staff: {:?}", all_names);
                 } else {
                     println!("Please enter a valid list command!")
                 }
