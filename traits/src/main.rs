@@ -2,9 +2,12 @@ trait Speak {
     fn speak(&self) -> String;
 }
 
+trait Named {
+    fn named(&self) -> String;
+}
+
 struct Dog;
 struct Cat;
-struct Cow;
 
 impl Speak for Dog {
     fn speak(&self) -> String {
@@ -18,18 +21,30 @@ impl Speak for Cat {
     }
 }
 
-impl Speak for Cow {
-    fn speak(&self) -> String {
-        "Moo!".to_string()
+impl Named for Dog {
+    fn named(&self) -> String {
+        "Kat".to_string()
     }
 }
 
-fn main() {
-    let dog = Dog;
-    let cat = Cat;
-    let cow = Cow;
+impl Named for Cat {
+    fn named(&self) -> String {
+        "Doug".to_string()
+    }
+}
 
-    println!("Dog says: {}", dog.speak());
-    println!("Cat says: {}", cat.speak());
-    print!("Cow says: {}", cow.speak());
+fn announce<T: Speak>(animal: T) {
+    println!("Announcement: {}", animal.speak());
+}
+
+fn name<T: Speak, B: Named>(animal: T) {
+    println!("Dog is named {} and says {}!", animal.)
+}
+
+// Same thing, shorter syntax:
+// fn announce(animal: impl Speak) { ... }
+
+fn main() {
+    announce(Dog);
+    announce(Cat);
 }
