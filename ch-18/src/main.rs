@@ -9,12 +9,15 @@ fn main() {
     post.request_review();
     assert_eq!("", post.content());
 
+    post.approve();
+    assert_eq!("", post.content());
+
     // post.approve();
     // assert_eq!("I ate a salad for lunch today", post.content());
 
     post.reject();
+    // assert_eq!("", post.content());
+
     post.approve();
-    post.request_review();
-    post.approve();
-    assert_eq!("I ate a salad for lunch today", post.content());
+    assert_eq!("", post.content());
 }
