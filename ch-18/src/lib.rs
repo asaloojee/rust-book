@@ -19,8 +19,20 @@ impl Post {
         }
     }
 
+    // pub fn add_text(&mut self, text: &str) {
+    //     self.content.push_str(text);
+    // }
+
     pub fn add_text(&mut self, text: &str) {
-        self.content.push_str(text);
+        if let Some(s) = self.state.take() {
+            self.state = Some(s.add_text(&mut self.content, text))
+        }
+    }
+
+    pub fn reset_text(&mut self) {
+        if let Some(s) = self.state.take() {
+            self.state = Some(s.reset_text(&mut self.content))
+        }
     }
 
     pub fn content(&self) -> &str {
@@ -53,6 +65,8 @@ trait State {
         ""
     }
     fn reject(self: Box<Self>, num_of_approvals: &mut i32) -> Box<dyn State>;
+    fn add_text(self: Box<Self>, content: &mut String, text: &str) -> Box<dyn State>;
+    fn reset_text(self: Box<Self>, content: &mut String) -> Box<dyn State>;
 }
 
 struct Draft {}
@@ -67,6 +81,16 @@ impl State for Draft {
     }
 
     fn reject(self: Box<Self>, _num_of_approvals: &mut i32) -> Box<dyn State> {
+        self
+    }
+
+    fn add_text(self: Box<Self>, content: &mut String, text: &str) -> Box<dyn State> {
+        content.push_str(text);
+        self
+    }
+
+    fn reset_text(self: Box<Self>, content: &mut String) -> Box<dyn State> {
+        content.clear();
         self
     }
 }
@@ -95,6 +119,14 @@ impl State for PendingReview {
         *num_of_approvals = 0;
         Box::new(Draft {})
     }
+
+    fn add_text(self: Box<Self>, _content: &mut String, _text: &str) -> Box<dyn State> {
+        self
+    }
+
+    fn reset_text(self: Box<Self>, _content: &mut String) -> Box<dyn State> {
+        self
+    }
 }
 
 struct Published {}
@@ -113,6 +145,14 @@ impl State for Published {
     }
 
     fn reject(self: Box<Self>, _num_of_approvals: &mut i32) -> Box<dyn State> {
+        self
+    }
+
+    fn add_text(self: Box<Self>, _content: &mut String, _text: &str) -> Box<dyn State> {
+        self
+    }
+
+    fn reset_text(self: Box<Self>, _content: &mut String) -> Box<dyn State> {
         self
     }
 }
